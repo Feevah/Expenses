@@ -29,14 +29,15 @@ function addTransaction(transaction) {
 		sign = '+';
 	}
 
+	// Create list item
 	const item = document.createElement('li');
 
-	// add class based on value ternary
+	// add class based on value - ternary
 	// item.classList.add(
 	// 	transaction.amount < 0 ? 'minus' : 'plus'
 	// );
 
-	// add class based on value if else
+	// add class based on value - if else
 	if (transaction.amount < 0) {
 		item.classList.add('minus');
 	} else {
@@ -52,12 +53,40 @@ function addTransaction(transaction) {
 	list.appendChild(item);
 }
 
+// Update Balance Income and Expense
+
+function updateValues() {
+	const amounts = transactions.map((transaction) => {
+		return transaction.amount;
+	});
+
+	const total = amounts
+		.reduce((acc, item) => (acc += item), 0)
+		.toFixed(2);
+
+	const income = amounts
+		.filter((item) => item > 0)
+		.reduce((acc, item) => (acc += item), 0)
+		.toFixed(2);
+
+	const expense = (amounts
+		.filter((item) => item < 0)
+		.reduce((acc, item) => (acc += item), 0) *
+		-1).toFixed(2);
+
+	balance.innerText = `$${total}`;
+	money_plus.innerText = income;
+	money_minus.innerText = expense;
+	console.log(amounts);
+}
+
 // init app
 
 function init() {
 	list.innerHTML = '';
 
 	transactions.forEach(addTransaction);
+	updateValues();
 }
 
 init();
