@@ -18,31 +18,30 @@ let transactions = dummyTrans;
 // Add transactions to DOM
 
 function addTransaction(transaction) {
-	// Get sign
-	const sign = transaction.amount < 0 ? '-' : '+';
+	// Get sign ternary
+	// const sign = transaction.amount < 0 ? '-' : '+';
 
-	// const sign = function() {
-	// 	if (transaction.amount < 0) {
-	// 		return '-';
-	// 	} else {
-	// 		return '+';
-	// 	}
-	// };
+	// Get Sign if else
+	let sign;
+	if (transaction.amount < 0) {
+		sign = '-';
+	} else {
+		sign = '+';
+	}
 
 	const item = document.createElement('li');
 
-	// add class based on value
-	item.classList.add(
-		transaction.amount < 0 ? 'minus' : 'plus'
-	);
+	// add class based on value ternary
+	// item.classList.add(
+	// 	transaction.amount < 0 ? 'minus' : 'plus'
+	// );
 
-	// item.classList.add(() => {
-	// 	if (transaction.amount < 0) {
-	// 		('minus');
-	// 	} else {
-	// 		('plus');
-	// 	}
-	// });
+	// add class based on value if else
+	if (transaction.amount < 0) {
+		item.classList.add('minus');
+	} else {
+		item.classList.add('plus');
+	}
 
 	item.innerHTML = `
     ${transaction.text} <span>${sign}${Math.abs(
