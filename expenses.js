@@ -6,14 +6,56 @@ const form = document.getElementById('form');
 const text = document.getElementById('text');
 const amount = document.getElementById('amount');
 
-const dummyTrans = [
-	{ id: 1, text: 'Hippie', amount: -20 },
-	{ id: 2, text: 'Jeans', amount: 230 },
-	{ id: 3, text: 'Shirt', amount: -20 },
-	{ id: 4, text: 'Boho', amount: 421 }
-];
+const localStorageTransactions = JSON.parse(
+	localStorage.getItem('transactions')
+);
+// const dummyTrans = [
+// 	{ id: 1, text: 'Hippie', amount: -20 },
+// 	{ id: 2, text: 'Jeans', amount: 230 },
+// 	{ id: 3, text: 'Shirt', amount: -20 },
+// 	{ id: 4, text: 'Boho', amount: 421 }
+// ];
 
-let transactions = dummyTrans;
+let transactions =
+	localStorage.getItem('transactions') !== null
+		? localStorageTransactions
+		: [];
+
+// Add transaction from form
+
+function addTransactionToIt(e) {
+	e.preventDefault();
+
+	if (
+		text.value.trim() === '' ||
+		amount.value.trim() === ''
+	) {
+		alert('Please add a text and amount');
+	} else {
+		const transaction = {
+			id     : generateID(),
+			text   : text.value,
+			amount : +amount.value
+		};
+
+		transactions.push(transaction);
+
+		addTransaction(transaction);
+
+		updateValues();
+
+		updateLocalStorage();
+
+		text.value = '';
+		amount.value = '';
+	}
+}
+
+// Generate random ID
+
+function generateID() {
+	return Math.floor(Math.random() * 100000000);
+}
 
 // Add transactions to DOM
 
@@ -47,7 +89,7 @@ function addTransaction(transaction) {
 	item.innerHTML = `
     ${transaction.text} <span>${sign}${Math.abs(
 		transaction.amount
-	)}</span> <button class="delete-btn">X</button>
+	)}</span> <button class="delete-btn" onclick="removeTransaction(${transaction.id})">X</button>
     `;
 
 	list.appendChild(item);
@@ -80,6 +122,17 @@ function updateValues() {
 	console.log(amounts);
 }
 
+// remove transaction by ID
+function removeTransaction(id) {
+	transactions = transactions.filter(
+		(transaction) => transaction.id !== id
+	);
+
+	updateLocalStorage();
+
+	init();
+}
+
 // init app
 
 function init() {
@@ -88,5 +141,16 @@ function init() {
 	transactions.forEach(addTransaction);
 	updateValues();
 }
+// Update local storage Transactions
+function updateLocalStorage() {
+	localStorage.setItem(
+		'transactions',
+		JSON.stringify(transactions)
+	);
+}
 
 init();
+
+// Event Listeners
+
+form.addEventListener('submit', addTransactionToIt);
